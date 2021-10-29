@@ -6,6 +6,11 @@ public abstract class DBAction
 {
     public DBActionType type;
     public Action<DBActionResult> Completed;
+
+    public QueryDBAction Query()
+    {
+        return (QueryDBAction)this;
+    }
 }
 
 public class QueryDBAction : DBAction

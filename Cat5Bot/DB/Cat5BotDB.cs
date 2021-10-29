@@ -31,18 +31,18 @@ public sealed class Cat5BotDB
 
     }
 
-    public static async Task<EntryDBActionResult> Query(QueryDBAction dbAction)
+    public static async Task<QueryDBActionResult> Query(QueryDBAction dbAction)
     {
-        TaskCompletionSource<EntryDBActionResult> query = new();
+        TaskCompletionSource<QueryDBActionResult> query = new();
         dbAction.Completed += (entry) =>
         {
-            query.SetResult((EntryDBActionResult)entry);
+            query.SetResult(entry.Query());
         };
         I.dbActionQueue.Enqueue(dbAction);
         return await query.Task;
     }
 
-    public static void HandleQueuedActions()
+    public static void ProcessQueuedDBActions()
     {
         // ensure loaded in memory
         int dbActionCount = I.dbActionQueue.Count;
@@ -57,11 +57,11 @@ public sealed class Cat5BotDB
 
     private static void ProcessDBAction(DBAction dbAction)
     {
-        DBActionResult actionResult;
+        DBActionResult actionResult = null;
         switch (dbAction.type)
         {
             case DBActionType.Query:
-                actionResult = new EntryDBActionResult();
+                actionResult = new QueryDBActionResult();
                 break;
         }
         dbAction.Completed?.Invoke(actionResult);

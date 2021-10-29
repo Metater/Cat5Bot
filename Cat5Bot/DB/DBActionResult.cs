@@ -9,29 +9,25 @@ namespace Cat5Bot.DB;
 public abstract class DBActionResult
 {
     public DBActionResultType type;
-}
 
-public class VoidDBActionResult : DBActionResult
-{
-    public VoidDBActionResult()
+    public QueryDBActionResult Query()
     {
-        type = DBActionResultType.Void;
+        return (QueryDBActionResult)this;
     }
 }
 
-public class EntryDBActionResult : DBActionResult
+public class QueryDBActionResult : DBActionResult
 {
     public readonly DBEntry dbEntry;
 
-    public EntryDBActionResult(DBEntry dbEntry)
+    public QueryDBActionResult(DBEntry dbEntry)
     {
-        type = DBActionResultType.Entry;
+        type = DBActionResultType.Query;
         this.dbEntry = dbEntry;
     }
 }
 
 public enum DBActionResultType
 {
-    Void,
-    Entry
+    Query
 }

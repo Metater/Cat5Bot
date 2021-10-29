@@ -1,8 +1,8 @@
 using System;
 
-public class DBEntry
+public abstract class DBEntry : IDBSerializable
 {
-
+    
 }
 
 public enum DBEntryType

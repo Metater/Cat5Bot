@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Cat5Bot.DB;
 
@@ -16,19 +17,39 @@ public sealed class Cat5BotDB
             {
                 lock (instanceLock)
                 {
-                    if (instance is null) instance = new Cat5BotDB();
+                    if (instance is null) Init();
                 }
             }
             return instance;
         }
     }
+    private void Init()
+    {
+        instance = new Cat5BotDB();
+        dbLock = new object();
+        db = new DB();
+    }
     #endregion Singleton
 
-    private readonly ConcurrentQueue<DBAction> dbActionQueue = new();
+    private object dbLock;
+    private DB db;
     
     public static void Insert(DBEntry dbEntry)
     {
 
+    }
+
+    public static void Remove(DBEntry dbEntry)
+    {
+        
+    }
+
+    public static DBEntry Query(QueryDBAction dbAction)
+    {
+        lock (dbLock)
+        {
+            return db.Query(dbAction);
+        }
     }
 
     public static async Task<QueryDBActionResult> Query(QueryDBAction dbAction)
@@ -41,12 +62,6 @@ public sealed class Cat5BotDB
         };
         I.dbActionQueue.Enqueue(dbAction);
         return await query.Task;
-    }
-
-    public static QueryDBActionResult Query(QueryDBAction dbAction)
-    {
-        //https://docs.microsoft.com/en-us/dotnet/standard/threading/how-to-use-spinlock-for-low-level-synchronization
-        
     }
 
     public static void ProcessQueuedDBActions()

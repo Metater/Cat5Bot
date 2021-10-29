@@ -10,9 +10,22 @@ public abstract class DBActionResult
 {
     public DBActionResultType type;
 
+    public InsertDBActionResult Insert()
+    {
+        return (InsertDBActionResult)this;
+    }
+
     public QueryDBActionResult Query()
     {
         return (QueryDBActionResult)this;
+    }
+}
+
+public class InsertDBActionResult : DBActionResult
+{
+    public InsertDBActionResult()
+    {
+        type = DBActionResultType.Insert;
     }
 }
 
@@ -29,5 +42,6 @@ public class QueryDBActionResult : DBActionResult
 
 public enum DBActionResultType
 {
+    Insert,
     Query
 }

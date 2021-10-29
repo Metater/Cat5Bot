@@ -8,5 +8,15 @@ namespace Cat5Bot.DB;
 
 public class DB
 {
+    private 
 
+    public DB()
+    {
+
+    }
+
+    public DBEntry Query()
+    {
+
+    }
 }

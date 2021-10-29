@@ -7,9 +7,22 @@ public abstract class DBAction
     public DBActionType type;
     public Action<DBActionResult> Completed;
 
+    public InsertDBAction Insert()
+    {
+        return (InsertDBAction)this;
+    }
+
     public QueryDBAction Query()
     {
         return (QueryDBAction)this;
+    }
+}
+
+public class InsertDBAction : DBAction
+{
+    public InsertDBAction()
+    {
+        type = DBActionType.Insert;
     }
 }
 

@@ -33,6 +33,7 @@ public sealed class Cat5BotDB
 
     public static async Task<QueryDBActionResult> Query(QueryDBAction dbAction)
     {
+        //https://docs.microsoft.com/en-us/dotnet/standard/threading/how-to-use-spinlock-for-low-level-synchronization
         TaskCompletionSource<QueryDBActionResult> query = new();
         dbAction.Completed += (entry) =>
         {
@@ -40,6 +41,12 @@ public sealed class Cat5BotDB
         };
         I.dbActionQueue.Enqueue(dbAction);
         return await query.Task;
+    }
+
+    public static QueryDBActionResult Query(QueryDBAction dbAction)
+    {
+        //https://docs.microsoft.com/en-us/dotnet/standard/threading/how-to-use-spinlock-for-low-level-synchronization
+        
     }
 
     public static void ProcessQueuedDBActions()

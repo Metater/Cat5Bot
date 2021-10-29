@@ -16,13 +16,9 @@ public class DBWriter
     public byte[] Data => _data;
     public int Length => _position;
 
-    public NetDataWriter() : this(true, InitialSize)
-    {
-    }
+    public NetDataWriter() : this(true, InitialSize) {}
 
-    public NetDataWriter(bool autoResize) : this(autoResize, InitialSize)
-    {
-    }
+    public NetDataWriter(bool autoResize) : this(autoResize, InitialSize) {}
 
     public NetDataWriter(bool autoResize, int initialSize)
     {
@@ -64,18 +60,6 @@ public class DBWriter
         byte[] resultData = new byte[_position];
         Buffer.BlockCopy(_data, 0, resultData, 0, _position);
         return resultData;
-    }
-
-    /// <summary>
-    /// Sets position of NetDataWriter to rewrite previous values
-    /// </summary>
-    /// <param name="position">new byte position</param>
-    /// <returns>previous position of data writer</returns>
-    public int SetPosition(int position)
-    {
-        int prevPosition = _position;
-        _position = position;
-        return prevPosition;
     }
 
     public void Put(float value)

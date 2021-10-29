@@ -10,7 +10,7 @@ await MainAsync();
 
 static async Task MainAsync()
 {
-    string? token = Console.ReadLine();
+    string token = Console.ReadLine();
 
     var discord = new DiscordClient(new DiscordConfiguration()
     {

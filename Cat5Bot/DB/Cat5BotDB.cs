@@ -1,11 +1,13 @@
 using System.Collections.Concurrent;
 
+namespace Cat5Bot.DB;
+
 public sealed class Cat5BotDB
 {
     #region Singleton
     private Cat5BotDB() {}
     private static Cat5BotDB instance = null;
-    private static readonly object instanceLock = new object();
+    private static readonly object instanceLock = new();
     public static Cat5BotDB I
     {
         get
@@ -22,44 +24,46 @@ public sealed class Cat5BotDB
     }
     #endregion Singleton
 
-    private ConcurrentQueue<DBAction> dbActionQueue = new ConcurrentQueue<DBAction>();
+    private readonly ConcurrentQueue<DBAction> dbActionQueue = new();
     
-    public void Insert(DBEntry dbEntry)
+    public static void Insert(DBEntry dbEntry)
     {
 
     }
 
-    public static async Task<DBEntry> Query(DBAction dbAction)
+    public static async Task<EntryDBActionResult> Query(QueryDBAction dbAction)
     {
-        TaskCompletionSource<DBEntry> query = new TaskCompletionSource<DBEntry>();
+        TaskCompletionSource<EntryDBActionResult> query = new();
         dbAction.Completed += (entry) =>
         {
-            query.SetResult(entry);
-        }
-        dbActionQueue.Enqueue(dbAction);
-        return query.Task;
+            query.SetResult((EntryDBActionResult)entry);
+        };
+        I.dbActionQueue.Enqueue(dbAction);
+        return await query.Task;
     }
 
-    public void Execute()
+    public static void HandleQueuedActions()
     {
         // ensure loaded in memory
-        int dbActionCount = dbActionQueue.Count;
+        int dbActionCount = I.dbActionQueue.Count;
         for (int i = 0; i < dbActionCount; i++)
         {
-            if (dbActionQueue.TryDequeue(out DBAction dbAction))
+            if (I.dbActionQueue.TryDequeue(out DBAction dbAction))
                 ProcessDBAction(dbAction);
             else
                 break;
         }
     }
 
-    private void ProcessDBAction(DBAction dbAction)
+    private static void ProcessDBAction(DBAction dbAction)
     {
+        DBActionResult actionResult;
         switch (dbAction.type)
         {
             case DBActionType.Query:
-                ((QueryDBAction)dbAction).Completed?.Invoke(new DBEntry());
+                actionResult = new EntryDBActionResult();
                 break;
         }
+        dbAction.Completed?.Invoke(actionResult);
     }
 }

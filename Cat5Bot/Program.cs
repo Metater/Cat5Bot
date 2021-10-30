@@ -3,34 +3,35 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Extensions;
 
 Console.WriteLine("Hello, World!");
 
-await MainAsync();
+string token = File.ReadAllText(Directory.GetCurrentDirectory() + @"\token.secret");
 
-static async Task MainAsync()
+var discord = new DiscordClient(new DiscordConfiguration()
 {
-    string token = Console.ReadLine();
+    Token = token,
+    TokenType = TokenType.Bot,
+    Intents = DiscordIntents.AllUnprivileged
+});
 
-    var discord = new DiscordClient(new DiscordConfiguration()
-    {
-        Token = token,
-        TokenType = TokenType.Bot,
-        Intents = DiscordIntents.AllUnprivileged
-    });
+discord.UseInteractivity();
 
-    discord.MessageCreated += async (s, e) =>
-    {
-        await e.Message.CreateReactionAsync(DiscordEmoji.FromName(discord, ":thumbup:"));
-    };
+/*
+discord.MessageCreated += async (s, e) =>
+{
+    await e.Message.CreateReactionAsync(DiscordEmoji.FromName(discord, ":men_wrestling:"));
+};
+*/
 
-    var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
-    {
-        StringPrefixes = new[] { "!" }
-    });
+var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
+{
+    StringPrefixes = new[] { "!" }
+});
 
-    //commands.RegisterCommands<Commands.GeneralModule>();
+commands.RegisterCommands<Cat5Bot.Commands.GeneralModule>();
 
-    await discord.ConnectAsync();
-    await Task.Delay(-1);
-}
+await discord.ConnectAsync();
+await Task.Delay(-1);

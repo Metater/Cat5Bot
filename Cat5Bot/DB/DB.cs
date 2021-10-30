@@ -14,97 +14,109 @@ public class DB
 
     private readonly List<AliasedStringDBEntry> nameAliases = new();
     private readonly List<EventDBEntry> events = new();
-    private readonly List<AttendanceDBEntry> attendance = new();
+    private readonly List<AttendanceDBEntry> attendanceRecords = new();
 
     public DB()
     {
-        ReadAll().GetAwaiter().GetResult();
+        ReadAll();
     }
 
-    public async Task WriteAll()
+    public void WriteAll()
     {
         DBWriter dbWriter = new();
         foreach (AliasedStringDBEntry nameAlias in nameAliases)
             nameAlias.Serialize(dbWriter);
-        await File.WriteAllBytesAsync(nameAliasesDBPath, dbWriter.CopyData());
+        File.WriteAllBytes(nameAliasesDBPath, dbWriter.CopyData());
         dbWriter.Reset();
         foreach (EventDBEntry @event in events)
             @event.Serialize(dbWriter);
-        await File.WriteAllBytesAsync(eventsDBPath, dbWriter.CopyData());
+        File.WriteAllBytes(eventsDBPath, dbWriter.CopyData());
         dbWriter.Reset();
-        foreach (AttendanceDBEntry attendanceRecord in attendance)
+        foreach (AttendanceDBEntry attendanceRecord in attendanceRecords)
             attendanceRecord.Serialize(dbWriter);
-        await File.WriteAllBytesAsync(attendanceDBPath, dbWriter.CopyData());
+        File.WriteAllBytes(attendanceDBPath, dbWriter.CopyData());
     }
 
-    public async Task ReadAll()
+    public void ReadAll()
     {
         nameAliases.Clear();
         events.Clear();
-        attendance.Clear();
+        attendanceRecords.Clear();
         DBReader dbReader = new();
         if (File.Exists(nameAliasesDBPath))
         {
-            dbReader.SetSource(await File.ReadAllBytesAsync(nameAliasesDBPath));
+            dbReader.SetSource(File.ReadAllBytes(nameAliasesDBPath));
             while (!dbReader.EndOfData)
                 nameAliases.Add(new AliasedStringDBEntry(dbReader));
         }
         if (File.Exists(eventsDBPath))
         {
-            dbReader.SetSource(await File.ReadAllBytesAsync(eventsDBPath));
+            dbReader.SetSource(File.ReadAllBytes(eventsDBPath));
             while (!dbReader.EndOfData)
                 events.Add(new EventDBEntry(dbReader));
         }
         if (File.Exists(attendanceDBPath))
         {
-            dbReader.SetSource(await File.ReadAllBytesAsync(attendanceDBPath));
+            dbReader.SetSource(File.ReadAllBytes(attendanceDBPath));
             while (!dbReader.EndOfData)
-                attendance.Add(new AttendanceDBEntry(dbReader));
+                attendanceRecords.Add(new AttendanceDBEntry(dbReader));
         }
     }
 
-    public void InsertNameAlias(ulong alias, string name, out AliasedStringDBEntry entry)
+    public void Insert(AliasedStringDBEntry entry)
     {
-        entry = new AliasedStringDBEntry(alias, name);
         nameAliases.Add(entry);
     }
-
-    public bool QueryNameAlias(ulong alias, out AliasedStringDBEntry entry)
+    public void Insert(EventDBEntry entry)
     {
-        entry = nameAliases.Find((e) => e.alias == alias);
+        events.Add(entry);
+    }
+    public void Insert(AttendanceDBEntry entry)
+    {
+        attendanceRecords.Add(entry);
+    }
+
+    public bool Remove(Predicate<AliasedStringDBEntry> remove)
+    {
+        return 0 != nameAliases.RemoveAll(remove);
+    }
+    public bool Remove(Predicate<EventDBEntry> remove)
+    {
+        return 0 != events.RemoveAll(remove);
+    }
+    public bool Remove(Predicate<AttendanceDBEntry> remove)
+    {
+        return 0 != attendanceRecords.RemoveAll(remove);
+    }
+
+    public bool Query(Predicate<AliasedStringDBEntry> query, out List<AliasedStringDBEntry> entries)
+    {
+        entries = nameAliases.FindAll(query);
+        return entries.Count > 0;
+    }
+    public bool Query(Predicate<EventDBEntry> query, out List<EventDBEntry> entries)
+    {
+        entries = events.FindAll(query);
+        return entries.Count > 0;
+    }
+    public bool Query(Predicate<AttendanceDBEntry> query, out List<AttendanceDBEntry> entries)
+    {
+        entries = attendanceRecords.FindAll(query);
+        return entries.Count > 0;
+    }
+    public bool Query(Predicate<AliasedStringDBEntry> query, out AliasedStringDBEntry entry)
+    {
+        entry = nameAliases.Find(query);
         return entry is not null;
     }
-
-    public bool InsertEvent(string name, string eventType, DateTime time, TimeSpan length, out EventDBEntry entry)
+    public bool Query(Predicate<EventDBEntry> query, out EventDBEntry entry)
     {
-        ulong eventId = (ulong)DateTime.UtcNow.ToFileTimeUtc();
-        entry = new EventDBEntry(eventId, name, eventType, time, length);
-        events.Add(eventId, entry);
-        return true;
+        entry = events.Find(query);
+        return entry is not null;
     }
-
-    public bool QueryEvent(ulong eventId, out EventDBEntry entry)
+    public bool Query(Predicate<AttendanceDBEntry> query, out AttendanceDBEntry entry)
     {
-        return events.TryGetValue(eventId, out entry);
+        entry = attendanceRecords.Find(query);
+        return entry is not null;
     }
-
-    public bool InsertAttendance(ulong attendee, out AttendanceDBEntry entry)
-    {
-        entry = new AttendanceDBEntry(attendee);
-        if (!attendance.TryAdd(attendee, entry))
-            return QueryAttendance(attendee, out entry);
-        return true;
-    }
-
-    public bool QueryAttendance(ulong attendee, out AttendanceDBEntry entry)
-    {
-        return attendance.TryGetValue(attendee, out entry);
-    }
-}
-
-public enum DBType
-{
-    NameAliases,
-    Events,
-    Attendance
 }

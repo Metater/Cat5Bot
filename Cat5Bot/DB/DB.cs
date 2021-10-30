@@ -6,28 +6,86 @@ using System.Threading.Tasks;
 
 namespace Cat5Bot.DB;
 
-public class DB : IDBSerializable
+public class DB
 {
+    private string nameAliasesDBPath => Directory.GetCurrentDirectory() + @"\nameAliases.db";
+    private string eventsDBPath => Directory.GetCurrentDirectory() + @"\events.db";
+    private string attendanceDBPath => Directory.GetCurrentDirectory() + @"\attendance.db";
 
-    private Dictionary<ulong, AliasedStringDBEntry> nameAliases = new();
-    private Dictionary<ulong, AttendanceDBEntry> attendance = new();
+    private readonly List<AliasedStringDBEntry> nameAliases = new();
+    private readonly List<EventDBEntry> events = new();
+    private readonly List<AttendanceDBEntry> attendance = new();
 
     public DB()
     {
-        // make arrays longer than ushort by storing length not in default place, make new method or store length with int
+        ReadAll().GetAwaiter().GetResult();
     }
 
-    public bool InsertNameAlias(ulong alias, string name, out AliasedStringDBEntry entry)
+    public async Task WriteAll()
+    {
+        DBWriter dbWriter = new();
+        foreach (AliasedStringDBEntry nameAlias in nameAliases)
+            nameAlias.Serialize(dbWriter);
+        await File.WriteAllBytesAsync(nameAliasesDBPath, dbWriter.CopyData());
+        dbWriter.Reset();
+        foreach (EventDBEntry @event in events)
+            @event.Serialize(dbWriter);
+        await File.WriteAllBytesAsync(eventsDBPath, dbWriter.CopyData());
+        dbWriter.Reset();
+        foreach (AttendanceDBEntry attendanceRecord in attendance)
+            attendanceRecord.Serialize(dbWriter);
+        await File.WriteAllBytesAsync(attendanceDBPath, dbWriter.CopyData());
+    }
+
+    public async Task ReadAll()
+    {
+        nameAliases.Clear();
+        events.Clear();
+        attendance.Clear();
+        DBReader dbReader = new();
+        if (File.Exists(nameAliasesDBPath))
+        {
+            dbReader.SetSource(await File.ReadAllBytesAsync(nameAliasesDBPath));
+            while (!dbReader.EndOfData)
+                nameAliases.Add(new AliasedStringDBEntry(dbReader));
+        }
+        if (File.Exists(eventsDBPath))
+        {
+            dbReader.SetSource(await File.ReadAllBytesAsync(eventsDBPath));
+            while (!dbReader.EndOfData)
+                events.Add(new EventDBEntry(dbReader));
+        }
+        if (File.Exists(attendanceDBPath))
+        {
+            dbReader.SetSource(await File.ReadAllBytesAsync(attendanceDBPath));
+            while (!dbReader.EndOfData)
+                attendance.Add(new AttendanceDBEntry(dbReader));
+        }
+    }
+
+    public void InsertNameAlias(ulong alias, string name, out AliasedStringDBEntry entry)
     {
         entry = new AliasedStringDBEntry(alias, name);
-        if (!nameAliases.TryAdd(alias, entry))
-            return QueryNameAlias(alias, out entry);
-        return true;
+        nameAliases.Add(entry);
     }
 
     public bool QueryNameAlias(ulong alias, out AliasedStringDBEntry entry)
     {
-        return nameAliases.TryGetValue(alias, out entry);
+        entry = nameAliases.Find((e) => e.alias == alias);
+        return entry is not null;
+    }
+
+    public bool InsertEvent(string name, string eventType, DateTime time, TimeSpan length, out EventDBEntry entry)
+    {
+        ulong eventId = (ulong)DateTime.UtcNow.ToFileTimeUtc();
+        entry = new EventDBEntry(eventId, name, eventType, time, length);
+        events.Add(eventId, entry);
+        return true;
+    }
+
+    public bool QueryEvent(ulong eventId, out EventDBEntry entry)
+    {
+        return events.TryGetValue(eventId, out entry);
     }
 
     public bool InsertAttendance(ulong attendee, out AttendanceDBEntry entry)
@@ -42,14 +100,11 @@ public class DB : IDBSerializable
     {
         return attendance.TryGetValue(attendee, out entry);
     }
+}
 
-    public void Serialize(DBWriter dbWriter)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Deserialize(DBReader dbReader)
-    {
-        throw new NotImplementedException();
-    }
+public enum DBType
+{
+    NameAliases,
+    Events,
+    Attendance
 }

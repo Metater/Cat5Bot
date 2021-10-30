@@ -185,6 +185,109 @@ public class DBReader
         return arr;
     }
 
+    public bool[] GetBoolArrayLong()
+    {
+        int size = GetInt();
+        var arr = new bool[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size);
+        _position += size;
+        return arr;
+    }
+
+    public ushort[] GetUShortArrayLong()
+    {
+        int size = GetInt();
+        var arr = new ushort[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size * 2);
+        _position += size * 2;
+        return arr;
+    }
+
+    public short[] GetShortArrayLong()
+    {
+        int size = GetInt();
+        var arr = new short[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size * 2);
+        _position += size * 2;
+        return arr;
+    }
+
+    public long[] GetLongArrayLong()
+    {
+        int size = GetInt();
+        var arr = new long[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size * 8);
+        _position += size * 8;
+        return arr;
+    }
+
+    public ulong[] GetULongArrayLong()
+    {
+        int size = GetInt();
+        var arr = new ulong[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size * 8);
+        _position += size * 8;
+        return arr;
+    }
+
+    public int[] GetIntArrayLong()
+    {
+        int size = GetInt();
+        var arr = new int[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size * 4);
+        _position += size * 4;
+        return arr;
+    }
+
+    public uint[] GetUIntArrayLong()
+    {
+        int size = GetInt();
+        var arr = new uint[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size * 4);
+        _position += size * 4;
+        return arr;
+    }
+
+    public float[] GetFloatArrayLong()
+    {
+        int size = GetInt();
+        var arr = new float[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size * 4);
+        _position += size * 4;
+        return arr;
+    }
+
+    public double[] GetDoubleArrayLong()
+    {
+        int size = GetInt();
+        var arr = new double[size];
+        Buffer.BlockCopy(_data, _position, arr, 0, size * 8);
+        _position += size * 8;
+        return arr;
+    }
+
+    public string[] GetStringArrayLong()
+    {
+        int size = GetInt();
+        var arr = new string[size];
+        for (int i = 0; i < size; i++)
+        {
+            arr[i] = GetString();
+        }
+        return arr;
+    }
+
+    public string[] GetStringArrayLong(int maxStringLength)
+    {
+        int size = GetInt();
+        var arr = new string[size];
+        for (int i = 0; i < size; i++)
+        {
+            arr[i] = GetString(maxStringLength);
+        }
+        return arr;
+    }
+
     public bool GetBool()
     {
         bool res = _data[_position] > 0;

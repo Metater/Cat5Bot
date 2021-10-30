@@ -44,7 +44,7 @@ public sealed class Cat5BotDB
         
     }
 
-    public static DBEntry Query(QueryDBAction dbAction)
+    public static bool Query(DBEntryType entryType, Predicate<DBEntry> queryPredicate, out List<DBEntry> result)
     {
         lock (dbLock)
         {

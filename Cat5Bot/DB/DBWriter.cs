@@ -283,6 +283,79 @@ public class DBWriter
             Put(value[i], maxLength);
     }
 
+    private void PutArrayLong(Array arr, int sz)
+    {
+        int length = arr == null ? 0 : arr.Length;
+        sz *= length;
+        if (_autoResize)
+            ResizeIfNeed(_position + sz + 4);
+        FastBitConverter.GetBytes(_data, _position, length);
+        if (arr != null)
+            Buffer.BlockCopy(arr, 0, _data, _position + 4, sz);
+        _position += sz + 4;
+    }
+
+    public void PutArrayLong(float[] value)
+    {
+        PutArrayLong(value, 4);
+    }
+
+    public void PutArrayLong(double[] value)
+    {
+        PutArrayLong(value, 8);
+    }
+
+    public void PutArrayLong(long[] value)
+    {
+        PutArrayLong(value, 8);
+    }
+
+    public void PutArrayLong(ulong[] value)
+    {
+        PutArrayLong(value, 8);
+    }
+
+    public void PutArrayLong(int[] value)
+    {
+        PutArrayLong(value, 4);
+    }
+
+    public void PutArrayLong(uint[] value)
+    {
+        PutArrayLong(value, 4);
+    }
+
+    public void PutArrayLong(ushort[] value)
+    {
+        PutArrayLong(value, 2);
+    }
+
+    public void PutArrayLong(short[] value)
+    {
+        PutArrayLong(value, 2);
+    }
+
+    public void PutArrayLong(bool[] value)
+    {
+        PutArrayLong(value, 1);
+    }
+
+    public void PutArrayLong(string[] value)
+    {
+        int len = value == null ? 0 : value.Length;
+        Put(len);
+        for (int i = 0; i < len; i++)
+            Put(value[i]);
+    }
+
+    public void PutArrayLong(string[] value, int maxLength)
+    {
+        int len = value == null ? 0 : value.Length;
+        Put(len);
+        for (int i = 0; i < len; i++)
+            Put(value[i], maxLength);
+    }
+
     public void Put(string value)
     {
         if (string.IsNullOrEmpty(value))

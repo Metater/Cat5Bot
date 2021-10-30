@@ -8,5 +8,6 @@ namespace Cat5Bot.DB;
 
 public interface IDBSerializable
 {
-    public byte[] Serialize();
+    public void Serialize(DBWriter dbWriter);
+    public void Deserialize(DBReader dbReader);
 }

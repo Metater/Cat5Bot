@@ -16,11 +16,11 @@ public class DBWriter
     public byte[] Data => _data;
     public int Length => _position;
 
-    public NetDataWriter() : this(true, InitialSize) {}
+    public DBWriter() : this(true, InitialSize) {}
 
-    public NetDataWriter(bool autoResize) : this(autoResize, InitialSize) {}
+    public DBWriter(bool autoResize) : this(autoResize, InitialSize) {}
 
-    public NetDataWriter(bool autoResize, int initialSize)
+    public DBWriter(bool autoResize, int initialSize)
     {
         _data = new byte[initialSize];
         _autoResize = autoResize;
@@ -281,12 +281,6 @@ public class DBWriter
         Put(len);
         for (int i = 0; i < len; i++)
             Put(value[i], maxLength);
-    }
-
-    public void Put(IPEndPoint endPoint)
-    {
-        Put(endPoint.Address.ToString());
-        Put(endPoint.Port);
     }
 
     public void Put(string value)

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Cat5Bot.DB;
+using Cat5Bot.Helpers;
 
 namespace Cat5Bot.Commands;
 
@@ -52,7 +53,15 @@ public class GeneralModule : BaseCommandModule
     [Command("dbw"), Description("Writes the DB to files")]
     public async Task DBWrite(CommandContext ctx)
     {
-        Cat5BotDB.WriteAll();
-        await ctx.RespondAsync($"Wrote DB.");
+        byte permissionLevelRequired = 16;
+        if (PermissionHelper.Allowed(ctx.User.Id, permissionLevelRequired, out byte permissionLevel))
+        {
+            Cat5BotDB.I.WriteAll();
+            await ctx.RespondAsync($"Wrote DB.");
+        }
+        else
+        {
+            await ctx.RespondAsync($"Insufficient permission level {permissionLevel}, required >= {permissionLevelRequired}.");
+        }
     }
 }

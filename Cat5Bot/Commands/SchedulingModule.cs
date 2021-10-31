@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using Cat5Bot.DB;
+using Cat5Bot.Helpers;
 
 namespace Cat5Bot.Commands;
 
@@ -22,9 +23,7 @@ public class SchedulingModule : BaseCommandModule
         var msg = await ctx.RespondAsync($"Would you like to add or remove an event? Timeout in 30 seconds.");
         var emoAdd = DiscordEmoji.FromName(ctx.Client, ":white_check_mark:");
         var emoRemove = DiscordEmoji.FromName(ctx.Client, ":x:");
-        await msg.CreateReactionAsync(emoAdd);
-        await Task.Delay(250);
-        await msg.CreateReactionAsync(emoRemove);
+        await msg.CreateReactionsAsync(250, emoAdd, emoRemove);
         var em = await interactivity.WaitForReactionAsync(xe => xe.Emoji == emoAdd || xe.Emoji == emoRemove, ctx.User, TimeSpan.FromSeconds(30));
         await msg.DeleteAsync();
         if (!em.TimedOut)

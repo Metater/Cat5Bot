@@ -9,10 +9,12 @@ namespace Cat5Bot.DB;
 public class DB
 {
     private string nameAliasesDBPath => Directory.GetCurrentDirectory() + @"\nameAliases.db";
+    private string permissionsDBPath => Directory.GetCurrentDirectory() + @"\permissions.db";
     private string eventsDBPath => Directory.GetCurrentDirectory() + @"\events.db";
     private string attendanceDBPath => Directory.GetCurrentDirectory() + @"\attendance.db";
 
     private readonly List<AliasedStringDBEntry> nameAliases = new();
+    private readonly List<AliasedByteDBEntry> permissions = new();
     private readonly List<EventDBEntry> events = new();
     private readonly List<AttendanceDBEntry> attendanceRecords = new();
 
@@ -24,14 +26,22 @@ public class DB
     public void WriteAll()
     {
         DBWriter dbWriter = new();
+
         foreach (AliasedStringDBEntry nameAlias in nameAliases)
             nameAlias.Serialize(dbWriter);
         File.WriteAllBytes(nameAliasesDBPath, dbWriter.CopyData());
         dbWriter.Reset();
+
+        foreach (AliasedByteDBEntry permission in permissions)
+            permission.Serialize(dbWriter);
+        File.WriteAllBytes(permissionsDBPath, dbWriter.CopyData());
+        dbWriter.Reset();
+
         foreach (EventDBEntry @event in events)
             @event.Serialize(dbWriter);
         File.WriteAllBytes(eventsDBPath, dbWriter.CopyData());
         dbWriter.Reset();
+
         foreach (AttendanceDBEntry attendanceRecord in attendanceRecords)
             attendanceRecord.Serialize(dbWriter);
         File.WriteAllBytes(attendanceDBPath, dbWriter.CopyData());
@@ -40,6 +50,7 @@ public class DB
     public void ReadAll()
     {
         nameAliases.Clear();
+        permissions.Clear();
         events.Clear();
         attendanceRecords.Clear();
         DBReader dbReader = new();
@@ -48,6 +59,12 @@ public class DB
             dbReader.SetSource(File.ReadAllBytes(nameAliasesDBPath));
             while (!dbReader.EndOfData)
                 nameAliases.Add(new AliasedStringDBEntry(dbReader));
+        }
+        if (File.Exists(permissionsDBPath))
+        {
+            dbReader.SetSource(File.ReadAllBytes(permissionsDBPath));
+            while (!dbReader.EndOfData)
+                permissions.Add(new AliasedByteDBEntry(dbReader));
         }
         if (File.Exists(eventsDBPath))
         {
@@ -67,6 +84,10 @@ public class DB
     {
         nameAliases.Add(entry);
     }
+    public void Insert(AliasedByteDBEntry entry)
+    {
+        permissions.Add(entry);
+    }
     public void Insert(EventDBEntry entry)
     {
         events.Add(entry);
@@ -79,6 +100,10 @@ public class DB
     public bool Remove(Predicate<AliasedStringDBEntry> remove)
     {
         return 0 != nameAliases.RemoveAll(remove);
+    }
+    public bool Remove(Predicate<AliasedByteDBEntry> remove)
+    {
+        return 0 != permissions.RemoveAll(remove);
     }
     public bool Remove(Predicate<EventDBEntry> remove)
     {
@@ -94,6 +119,11 @@ public class DB
         entries = nameAliases.FindAll(query);
         return entries.Count > 0;
     }
+    public bool Query(Predicate<AliasedByteDBEntry> query, out List<AliasedByteDBEntry> entries)
+    {
+        entries = permissions.FindAll(query);
+        return entries.Count > 0;
+    }
     public bool Query(Predicate<EventDBEntry> query, out List<EventDBEntry> entries)
     {
         entries = events.FindAll(query);
@@ -107,6 +137,11 @@ public class DB
     public bool Query(Predicate<AliasedStringDBEntry> query, out AliasedStringDBEntry entry)
     {
         entry = nameAliases.Find(query);
+        return entry is not null;
+    }
+    public bool Query(Predicate<AliasedByteDBEntry> query, out AliasedByteDBEntry entry)
+    {
+        entry = permissions.Find(query);
         return entry is not null;
     }
     public bool Query(Predicate<EventDBEntry> query, out EventDBEntry entry)

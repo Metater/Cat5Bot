@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Cat5Bot.DB;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -35,4 +36,8 @@ commands.RegisterCommands<Cat5Bot.Commands.GeneralModule>();
 commands.RegisterCommands<Cat5Bot.Commands.SchedulingModule>();
 
 await discord.ConnectAsync();
-await Task.Delay(-1);
+while (!Console.KeyAvailable)
+{
+    await Task.Delay(10000);
+    Cat5BotDB.I.WriteAll();
+}

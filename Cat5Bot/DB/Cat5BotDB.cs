@@ -6,7 +6,11 @@ namespace Cat5Bot.DB;
 public sealed class Cat5BotDB
 {
     #region Singleton
-    private Cat5BotDB() {}
+    private Cat5BotDB()
+    {
+        dbLock = new();
+        db = new();
+    }
     private static Cat5BotDB instance = null;
     private static readonly object instanceLock = new();
     public static Cat5BotDB I
@@ -19,9 +23,7 @@ public sealed class Cat5BotDB
                 {
                     if (instance is null)
                     {
-                        instance = new Cat5BotDB();
-                        I.dbLock = new object();
-                        I.db = new DB();
+                        instance = new();
                     }
                 }
             }
@@ -31,80 +33,107 @@ public sealed class Cat5BotDB
     #endregion Singleton
 
     #region BasicFunctionality
-    private object dbLock;
-    private DB db;
+    private readonly object dbLock;
+    private readonly DB db;
 
-    public static void WriteAll()
+    public void WriteAll()
     {
-        lock (I.dbLock) I.db.WriteAll();
+        lock (dbLock) db.WriteAll();
     }
-    public static void ReadAll()
+    public void ReadAll()
     {
-        lock (I.dbLock) I.db.ReadAll();
-    }
-
-    public static void Insert(AliasedStringDBEntry entry)
-    {
-        lock (I.dbLock) I.db.Insert(entry);
-    }
-    public static void Insert(EventDBEntry entry)
-    {
-        lock (I.dbLock) I.db.Insert(entry);
-    }
-    public static void Insert(AttendanceDBEntry entry)
-    {
-        lock (I.dbLock) I.db.Insert(entry);
+        lock (dbLock) db.ReadAll();
     }
 
-    public static bool Remove(Predicate<AliasedStringDBEntry> remove)
+    public void Insert(AliasedStringDBEntry entry)
     {
-        lock (I.dbLock) return I.db.Remove(remove);
+        lock (dbLock) db.Insert(entry);
     }
-    public static bool Remove(Predicate<EventDBEntry> remove)
+    public void Insert(AliasedByteDBEntry entry)
     {
-        lock (I.dbLock) return I.db.Remove(remove);
+        lock (dbLock) db.Insert(entry);
     }
-    public static bool Remove(Predicate<AttendanceDBEntry> remove)
+    public void Insert(EventDBEntry entry)
     {
-        lock (I.dbLock) return I.db.Remove(remove);
+        lock (dbLock) db.Insert(entry);
+    }
+    public void Insert(AttendanceDBEntry entry)
+    {
+        lock (dbLock) db.Insert(entry);
     }
 
-    public static bool Query(Predicate<AliasedStringDBEntry> query, out List<AliasedStringDBEntry> entries)
+    public bool Remove(Predicate<AliasedStringDBEntry> remove)
     {
-        lock (I.dbLock) return I.db.Query(query, out entries);
+        lock (dbLock) return db.Remove(remove);
     }
-    public static bool Query(Predicate<EventDBEntry> query, out List<EventDBEntry> entries)
+    public bool Remove(Predicate<AliasedByteDBEntry> remove)
     {
-        lock (I.dbLock) return I.db.Query(query, out entries);
+        lock (dbLock) return db.Remove(remove);
     }
-    public static bool Query(Predicate<AttendanceDBEntry> query, out List<AttendanceDBEntry> entries)
+    public bool Remove(Predicate<EventDBEntry> remove)
     {
-        lock (I.dbLock) return I.db.Query(query, out entries);
+        lock (dbLock) return db.Remove(remove);
     }
-    public static bool Query(Predicate<AliasedStringDBEntry> query, out AliasedStringDBEntry entry)
+    public bool Remove(Predicate<AttendanceDBEntry> remove)
     {
-        lock (I.dbLock) return I.db.Query(query, out entry);
+        lock (dbLock) return db.Remove(remove);
     }
-    public static bool Query(Predicate<EventDBEntry> query, out EventDBEntry entry)
+
+    public bool Query(Predicate<AliasedStringDBEntry> query, out List<AliasedStringDBEntry> entries)
     {
-        lock (I.dbLock) return I.db.Query(query, out entry);
+        lock (dbLock) return db.Query(query, out entries);
     }
-    public static bool Query(Predicate<AttendanceDBEntry> query, out AttendanceDBEntry entry)
+    public bool Query(Predicate<AliasedByteDBEntry> query, out List<AliasedByteDBEntry> entries)
     {
-        lock (I.dbLock) return I.db.Query(query, out entry);
+        lock (dbLock) return db.Query(query, out entries);
+    }
+    public bool Query(Predicate<EventDBEntry> query, out List<EventDBEntry> entries)
+    {
+        lock (dbLock) return db.Query(query, out entries);
+    }
+    public bool Query(Predicate<AttendanceDBEntry> query, out List<AttendanceDBEntry> entries)
+    {
+        lock (dbLock) return db.Query(query, out entries);
+    }
+    public bool Query(Predicate<AliasedStringDBEntry> query, out AliasedStringDBEntry entry)
+    {
+        lock (dbLock) return db.Query(query, out entry);
+    }
+    public bool Query(Predicate<AliasedByteDBEntry> query, out AliasedByteDBEntry entry)
+    {
+        lock (dbLock) return db.Query(query, out entry);
+    }
+    public bool Query(Predicate<EventDBEntry> query, out EventDBEntry entry)
+    {
+        lock (dbLock) return db.Query(query, out entry);
+    }
+    public bool Query(Predicate<AttendanceDBEntry> query, out AttendanceDBEntry entry)
+    {
+        lock (dbLock) return db.Query(query, out entry);
     }
     #endregion BasicFunctionality
 
     #region ExtendedFunctionality
     public static void LinkAttendee(ulong attendee, string name)
     {
-        if (Query((e) => e.alias == attendee, out AliasedStringDBEntry e))
+        if (I.Query((e) => e.alias == attendee, out AliasedStringDBEntry e))
         {
             e.str = name;
         }
         else
         {
-            Insert(new AliasedStringDBEntry(attendee, name));
+            I.Insert(new AliasedStringDBEntry(attendee, name));
+        }
+    }
+    public static void UpdatePermission(ulong member, byte permission)
+    {
+        if (I.Query((e) => e.alias == member, out AliasedByteDBEntry e))
+        {
+            e.bite = permission;
+        }
+        else
+        {
+            I.Insert(new AliasedByteDBEntry(member, permission));
         }
     }
     #endregion ExtendedFunctionality

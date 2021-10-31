@@ -40,6 +40,37 @@ public class AliasedStringDBEntry : DBEntry
     }
 }
 
+public class AliasedByteDBEntry : DBEntry
+{
+    public ulong alias;
+    public byte bite;
+
+    public AliasedByteDBEntry(ulong alias, byte bite)
+    {
+        type = DBEntryType.AliasedByte;
+        this.alias = alias;
+        this.bite = bite;
+    }
+
+    public AliasedByteDBEntry(DBReader dbReader)
+    {
+        type = DBEntryType.AliasedByte;
+        Deserialize(dbReader);
+    }
+
+    public override void Serialize(DBWriter dbWriter)
+    {
+        dbWriter.Put(alias);
+        dbWriter.Put(bite);
+    }
+
+    public override void Deserialize(DBReader dbReader)
+    {
+        alias = dbReader.GetULong();
+        bite = dbReader.GetByte();
+    }
+}
+
 public class EventDBEntry : DBEntry
 {
     public ulong eventId;
@@ -132,6 +163,7 @@ public class AttendanceDBEntry : DBEntry
 public enum DBEntryType : byte
 {
     AliasedString,
+    AliasedByte,
     Event,
     Attendance
 }

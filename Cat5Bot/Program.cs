@@ -32,6 +32,7 @@ var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
 });
 
 commands.RegisterCommands<Cat5Bot.Commands.GeneralModule>();
+commands.RegisterCommands<Cat5Bot.Commands.SchedulingModule>();
 
 await discord.ConnectAsync();
 await Task.Delay(-1);

@@ -15,7 +15,7 @@ namespace Cat5Bot.Commands;
 
 public class GeneralModule : BaseCommandModule
 {
-    [Command("link"), Description("Links full name to attendance record")]
+    [Command("link"), Description("Links full name to attendance record.")]
     public async Task Link(CommandContext ctx, [Description("Your full name to be used in the attendance record")] params string[] fullName)
     {
         if (fullName.Length < 1)
@@ -28,7 +28,7 @@ public class GeneralModule : BaseCommandModule
         await ctx.RespondAsync($"Linked your attendance record to \"{nameStr}\".");
     }
 
-    [Command("attend"), Description("Marks your attendance for an event")]
+    [Command("attend"), Description("Marks your attendance for an event.")]
     public async Task Attend(CommandContext ctx)
     {
         string res = $"Marked as attending \"NameOfEvent\" on \"DateOfEvent\" at \"TimeOfEvent\".";
@@ -50,7 +50,7 @@ public class GeneralModule : BaseCommandModule
         }
     }
 
-    [Command("dbw"), Description("Writes the DB to files")]
+    [Command("dbw"), Description("Writes the DB to files.")]
     public async Task DBWrite(CommandContext ctx)
     {
         byte permissionLevelRequired = 16;

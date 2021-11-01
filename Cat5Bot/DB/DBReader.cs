@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Cat5Bot.DB;
 
+// Adapted from: https://github.com/RevenantX/LiteNetLib/blob/master/LiteNetLib/Utils/NetDataReader.cs
 public class DBReader
 {
     protected byte[] _data;

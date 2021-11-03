@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Cat5Bot.DB;
 
+// Adapted from: https://github.com/RevenantX/LiteNetLib/blob/master/LiteNetLib/Utils/FastBitConverter.cs
 public static class FastBitConverter
 {
     [StructLayout(LayoutKind.Explicit)]

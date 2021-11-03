@@ -2,6 +2,8 @@ namespace Cat5Bot;
 
 public static class Constants
 {
+    public const double CancellableCommandTimeout = 120;
+    
     public static class Permission
     {
         public const byte WriteDB = 16;

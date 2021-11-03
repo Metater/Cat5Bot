@@ -42,4 +42,7 @@ while (!Console.KeyAvailable)
 // update db entries only through methods
 // make db entries get; private set, and update only through methods
 
+//https://stackoverflow.com/questions/23285753/how-to-await-on-async-delegate
+//https://docs.microsoft.com/en-us/dotnet/api/system.func-2?view=net-5.0
+
 Cat5BotDB.I.WriteAll();

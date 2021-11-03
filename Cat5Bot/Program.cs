@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Cat5Bot.DB;
+using Cat5Bot.Commands;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -20,22 +21,16 @@ var discord = new DiscordClient(new DiscordConfiguration()
 
 discord.UseInteractivity();
 
-/*
-discord.MessageCreated += async (s, e) =>
-{
-    await e.Message.CreateReactionAsync(DiscordEmoji.FromName(discord, ":men_wrestling:"));
-};
-*/
-
 var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
 {
     StringPrefixes = new[] { "!" }
 });
 
-commands.RegisterCommands<Cat5Bot.Commands.GeneralModule>();
-commands.RegisterCommands<Cat5Bot.Commands.SchedulingModule>();
-commands.RegisterCommands<Cat5Bot.Commands.PermissionsModule>();
-commands.RegisterCommands<Cat5Bot.Commands.NamingModule>();
+commands.RegisterCommands<GeneralModule>();
+commands.RegisterCommands<SchedulingModule>();
+commands.RegisterCommands<PermissionsModule>();
+commands.RegisterCommands<NamingModule>();
+commands.RegisterCommands<AttendingModule>();
 
 await discord.ConnectAsync();
 while (!Console.KeyAvailable)

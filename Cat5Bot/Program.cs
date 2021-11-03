@@ -39,4 +39,7 @@ while (!Console.KeyAvailable)
     Cat5BotDB.I.WriteAll();
 }
 
+// update db entries only through methods
+// make db entries get; private set, and update only through methods
+
 Cat5BotDB.I.WriteAll();

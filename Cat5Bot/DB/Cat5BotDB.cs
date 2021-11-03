@@ -136,5 +136,9 @@ public sealed class Cat5BotDB
             I.Insert(new AliasedByteDBEntry(member, permission));
         }
     }
+    public static void GetEvents(int day, int month, out List<EventDBEntry> events)
+    {
+        re
+    }
     #endregion ExtendedFunctionality
 }

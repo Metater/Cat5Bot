@@ -20,8 +20,10 @@ public class AttendingModule : BaseCommandModule
     [GroupCommand, Description("Marks your attendance for an event occuring today.")]
     public async Task AttendSelf(CommandContext ctx)
     {
+        // find event today, if multiple resolve ambiguity through interactivity
+
         string res = $"Marked as attending \"NameOfEvent\" on \"DateOfEvent\" at \"TimeOfEvent\".";
-        string timeoutMsg = $"Hit the X if this is incorrect, timeout in 120 seconds.";
+        string timeoutMsg = $"Hit the X to cancel, timeout in 120 seconds.";
         var msg = await ctx.RespondAsync(res + "\n\n" + timeoutMsg);
         var x = DiscordEmoji.FromName(ctx.Client, ":x:");
         await msg.CreateReactionAsync(x);
@@ -42,6 +44,8 @@ public class AttendingModule : BaseCommandModule
     [GroupCommand, Description("Marks someone else's attendance for an event occuring today.")]
     public async Task AttendOther(CommandContext ctx, DiscordUser user)
     {
+        // find event today, if multiple resolve ambiguity through interactivity
+
         string res = $"Marked as attending \"NameOfEvent\" on \"DateOfEvent\" at \"TimeOfEvent\".";
         string timeoutMsg = $"Hit the X if this is incorrect, timeout in 120 seconds.";
         var msg = await ctx.RespondAsync(res + "\n\n" + timeoutMsg);
@@ -59,6 +63,11 @@ public class AttendingModule : BaseCommandModule
             await msg.DeleteOwnReactionAsync(x);
             await msg.ModifyAsync(res);
         }
+    }
+
+    private async Task Attend()
+    {
+
     }
 
     // cmd: attend self date: ctx, date

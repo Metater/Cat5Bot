@@ -8,7 +8,7 @@ namespace Cat5Bot.DB;
 
 public class DB
 {
-    private string nameAliasesDBPath => Directory.GetCurrentDirectory() + @"\nameAliases.db";
+    private string nameDBPath => Directory.GetCurrentDirectory() + @"\names.db";
     private string permissionsDBPath => Directory.GetCurrentDirectory() + @"\permissions.db";
     private string eventsDBPath => Directory.GetCurrentDirectory() + @"\events.db";
     private string attendanceDBPath => Directory.GetCurrentDirectory() + @"\attendance.db";
@@ -29,7 +29,7 @@ public class DB
 
         foreach (AliasedStringDBEntry nameAlias in nameAliases)
             nameAlias.Serialize(dbWriter);
-        File.WriteAllBytes(nameAliasesDBPath, dbWriter.CopyData());
+        File.WriteAllBytes(nameDBPath, dbWriter.CopyData());
         dbWriter.Reset();
 
         foreach (AliasedByteDBEntry permission in permissions)
@@ -54,9 +54,9 @@ public class DB
         events.Clear();
         attendanceRecords.Clear();
         DBReader dbReader = new();
-        if (File.Exists(nameAliasesDBPath))
+        if (File.Exists(nameDBPath))
         {
-            dbReader.SetSource(File.ReadAllBytes(nameAliasesDBPath));
+            dbReader.SetSource(File.ReadAllBytes(nameDBPath));
             while (!dbReader.EndOfData)
                 nameAliases.Add(new AliasedStringDBEntry(dbReader));
         }

@@ -15,19 +15,6 @@ namespace Cat5Bot.Commands;
 
 public class GeneralModule : BaseCommandModule
 {
-    [Command("link"), Description("Links full name to attendance record.")]
-    public async Task Link(CommandContext ctx, [Description("Your full name to be used in the attendance record")] params string[] fullName)
-    {
-        if (fullName.Length < 1)
-        {
-            await ctx.RespondAsync($"Please put your full name following the command.");
-            return;
-        }
-        string nameStr = string.Join(" ", fullName);
-        Cat5BotDB.LinkAttendee(ctx.User.Id, nameStr);
-        await ctx.RespondAsync($"Linked your attendance record to \"{nameStr}\".");
-    }
-
     [Command("attend"), Description("Marks your attendance for an event.")]
     public async Task Attend(CommandContext ctx)
     {

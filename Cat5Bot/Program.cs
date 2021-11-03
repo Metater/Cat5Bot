@@ -39,6 +39,8 @@ commands.RegisterCommands<Cat5Bot.Commands.PermissionsModule>();
 await discord.ConnectAsync();
 while (!Console.KeyAvailable)
 {
-    await Task.Delay(10000);
+    await Task.Delay(30000);
     Cat5BotDB.I.WriteAll();
 }
+
+Cat5BotDB.I.WriteAll();

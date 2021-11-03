@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
+using Cat5Bot;
 using Cat5Bot.DB;
 using Cat5Bot.Helpers;
 
@@ -17,7 +18,7 @@ namespace Cat5Bot.Commands;
 public class NamingModule : BaseCommandModule
 {
     [GroupCommand, Description("Links your full name to attendance record.")]
-    public async Task LinkSelf(CommandContext ctx, [Description("Your full name to be used in the attendance record")] params string[] fullName)
+    public async Task NameSelf(CommandContext ctx, [Description("Your full name to be used in the attendance record")] params string[] fullName)
     {
         if (fullName.Length < 1)
         {
@@ -30,15 +31,22 @@ public class NamingModule : BaseCommandModule
     }
 
     [GroupCommand, Description("Links someone's full name to their attendance record.")]
-    public async Task LinkOther(CommandContext ctx, [Description("Person you are linking")] DiscordUser user, [Description("Their full name to be used in the attendance record")] params string[] fullName)
+    public async Task NameOther(CommandContext ctx, [Description("Person you are linking")] DiscordUser user, [Description("Their full name to be used in the attendance record")] params string[] fullName)
     {
-        if (fullName.Length < 1)
+        if (PermissionHelper.AllowedSelfAndGreaterThanOther(ctx.User.Id, Constants.Permission.NameOther, user.Id, out _, out _, out string message))
         {
-            await ctx.RespondAsync($"Please put their full name following the command.");
-            return;
+            if (fullName.Length < 1)
+            {
+                await ctx.RespondAsync($"Please put their full name following the command.");
+                return;
+            }
+            string nameStr = string.Join(" ", fullName);
+            Cat5BotDB.LinkAttendee(user.Id, nameStr);
+            await ctx.RespondAsync($"Linked their attendance record to \"{nameStr}\".");
         }
-        string nameStr = string.Join(" ", fullName);
-        Cat5BotDB.LinkAttendee(user.Id, nameStr);
-        await ctx.RespondAsync($"Linked their attendance record to \"{nameStr}\".");
+        else
+        {
+            await ctx.RespondAsync(message);
+        }
     }
 }

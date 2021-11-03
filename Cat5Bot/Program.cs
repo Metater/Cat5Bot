@@ -35,6 +35,7 @@ var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
 commands.RegisterCommands<Cat5Bot.Commands.GeneralModule>();
 commands.RegisterCommands<Cat5Bot.Commands.SchedulingModule>();
 commands.RegisterCommands<Cat5Bot.Commands.PermissionsModule>();
+commands.RegisterCommands<Cat5Bot.Commands.NamingModule>();
 
 await discord.ConnectAsync();
 while (!Console.KeyAvailable)

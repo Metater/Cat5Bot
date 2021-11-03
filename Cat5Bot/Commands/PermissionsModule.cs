@@ -25,15 +25,14 @@ public class PermissionsModule : BaseCommandModule
     [GroupCommand, Description("Sets the permissions of a user.")]
     public async Task SetPermissionLevel(CommandContext ctx, DiscordUser user, byte userPermissionLevel)
     {
-        byte permissionLevelRequired = 128;
-        if (PermissionHelper.Allowed(ctx.User.Id, permissionLevelRequired, out byte permissionLevel) && userPermissionLevel < permissionLevel)
+        if (PermissionHelper.AllowedSelfAndGreaterThanOther(ctx.User.Id, Constants.Permission.SetPermissionLevel, user.Id, out _, out _, out string message))
         {
             Cat5BotDB.UpdatePermission(user.Id, userPermissionLevel);
             await ctx.RespondAsync($"Updated permissions of \"{user.Username}\" to {userPermissionLevel}");
         }
         else
         {
-            await ctx.RespondAsync($"Insufficient permission level {permissionLevel}, required >= {permissionLevelRequired} and {userPermissionLevel} < your permission level {permissionLevel}.");
+            await ctx.RespondAsync(message);
         }
     }
 }

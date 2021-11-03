@@ -10,10 +10,20 @@ namespace Cat5Bot.Helpers;
 
 public static class PermissionHelper
 {
-    public static bool Allowed(ulong id, byte requiredPermissionLevel, out byte permissionLevel)
+    public static bool AllowedSelf(ulong id, byte requiredPermissionLevel, out byte permissionLevelSelf, out string message)
     {
-        permissionLevel = GetLevel(id);
-        return permissionLevel >= requiredPermissionLevel;
+        permissionLevelSelf = GetLevel(id);
+        message = "Insufficient permission level, must be true that:\n" +
+        $"\tYour level ({permissionLevelSelf}) >= Required level ({requiredPermissionLevel}).";
+        return permissionLevelSelf >= requiredPermissionLevel;
+    }
+
+    public static bool AllowedSelfAndGreaterThanOther(ulong id, byte requiredPermissionLevel, byte otherId, out byte permissionLevelSelf, out byte permissionLevelOther, out string message)
+    {
+        bool allowedSelf = AllowedSelf(id, requiredPermissionLevel, out permissionLevelSelf, out message);
+        permissionLevelOther = GetLevel(otherId);
+        message += "\n\tYour level ({permissionLevelSelf}) > Their level ({permissionLevelOther}).";
+        return allowedSelf && permissionLevelSelf > permissionLevelOther;
     }
 
     public static byte GetLevel(ulong id)

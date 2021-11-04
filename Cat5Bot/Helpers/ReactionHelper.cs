@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cat5Bot.Helpers;
+namespace Cat5Bot.Helpers; //{}
 
 public static class ReactionHelper
 {

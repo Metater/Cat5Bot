@@ -1,4 +1,4 @@
-namespace Cat5Bot.Helpers;
+namespace Cat5Bot.Helpers; //{}
 
 public static class InteractivityHelper
 {

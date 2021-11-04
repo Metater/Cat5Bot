@@ -1,4 +1,4 @@
-namespace Cat5Bot;
+namespace Cat5Bot; //{}
 
 public static class Constants
 {

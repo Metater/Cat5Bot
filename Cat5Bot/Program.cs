@@ -41,6 +41,7 @@ while (!Console.KeyAvailable)
 
 // update db entries only through methods
 // make db entries get; private set, and update only through methods
+// make type in DBEntry protexted set, public get
 
 //https://stackoverflow.com/questions/23285753/how-to-await-on-async-delegate
 //https://docs.microsoft.com/en-us/dotnet/api/system.func-2?view=net-5.0

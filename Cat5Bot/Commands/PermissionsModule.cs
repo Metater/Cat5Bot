@@ -11,7 +11,7 @@ using DSharpPlus.Entities;
 using Cat5Bot.DB;
 using Cat5Bot.Helpers;
 
-namespace Cat5Bot.Commands;
+namespace Cat5Bot.Commands; //{}
 
 [Group("perms"), Aliases("p", "permissions"), Description("Used for permission actions.")]
 public class PermissionsModule : BaseCommandModule

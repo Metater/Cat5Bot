@@ -12,7 +12,7 @@ using Cat5Bot;
 using Cat5Bot.DB;
 using Cat5Bot.Helpers;
 
-namespace Cat5Bot.Commands;
+namespace Cat5Bot.Commands; //{}
 
 [Group("attend"), Aliases("a"), Description("Used for attendance actions.")]
 public class AttendingModule : BaseCommandModule

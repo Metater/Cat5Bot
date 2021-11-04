@@ -12,7 +12,7 @@ using Cat5Bot;
 using Cat5Bot.DB;
 using Cat5Bot.Helpers;
 
-namespace Cat5Bot.Commands;
+namespace Cat5Bot.Commands; //{}
 
 [Group("name"), Aliases("n", "link", "l"), Description("Used for linking user's names to their account.")]
 public class NamingModule : BaseCommandModule

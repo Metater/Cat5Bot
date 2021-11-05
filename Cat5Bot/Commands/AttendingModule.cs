@@ -6,38 +6,17 @@ public class AttendingModule : BaseCommandModule
     [GroupCommand, Description("Marks your attendance for an event occuring today.")]
     public async Task AttendSelf(CommandContext ctx)
     {
-        // send message and pass into cacellable command later
-
         // find event today, if multiple resolve ambiguity through interactivity
+
+        string message = $"Marked as attending \"NameOfEvent\" on \"DateOfEvent\" at \"TimeOfEvent\".";
         var interactivity = ctx.Client.GetInteractivity();
-        await InteractivityHelper.CancellableCommand(interactivity, ctx, async (wasCancelled) =>
+        await InteractivityHelper.CancellableCommand(message, interactivity, ctx, async (cancelled) =>
         {
-            if (wasCancelled)
+            if (cancelled)
             {
-
-            }
-            else
-            {
-
+                await ctx.RespondAsync($"Okay, corrected your attendance, here is a list of events happening soon:");
             }
         });
-
-        string res = $"Marked as attending \"NameOfEvent\" on \"DateOfEvent\" at \"TimeOfEvent\".";
-        string timeoutMsg = $"Hit the X to cancel, timeout in 120 seconds.";
-        var msg = await ctx.RespondAsync(res + "\n\n" + timeoutMsg);
-        var x = DiscordEmoji.FromName(ctx.Client, ":x:");
-        await msg.CreateReactionAsync(x);
-        var em = await interactivity.WaitForReactionAsync(xe => xe.Emoji == x, ctx.User, TimeSpan.FromSeconds(120));
-        if (!em.TimedOut)
-        {
-            await msg.DeleteAsync();
-            await ctx.RespondAsync($"Okay, corrected your attendance, here is a list of events happening soon:");
-        }
-        else
-        {
-            await msg.DeleteOwnReactionAsync(x);
-            await msg.ModifyAsync(res);
-        }
     }
 
     [GroupCommand, Description("Marks someone else's attendance for an event occuring today.")]

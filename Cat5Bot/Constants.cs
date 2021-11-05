@@ -3,6 +3,7 @@ namespace Cat5Bot; //{}
 public static class Constants
 {
     public const double CancellableCommandTimeout = 120;
+    public const int DBSavePeriod = 30;
     
     public static class Permissions
     {

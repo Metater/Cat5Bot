@@ -1,5 +1,3 @@
-using System;
-
 namespace Cat5Bot.DB; //{}
 
 public abstract class DBEntry : IDBSerializable

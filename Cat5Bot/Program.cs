@@ -1,14 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Cat5Bot.DB;
-using Cat5Bot.Commands;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.Extensions;
-
-Console.WriteLine("Hello, World!");
+﻿Console.WriteLine("Hello, World!");
 
 string token = File.ReadAllText(Directory.GetCurrentDirectory() + @"\token.secret");
 
@@ -42,7 +32,7 @@ while (true)
         var key = Console.ReadKey();
         if (key.Key == ConsoleKey.X) break;
     }
-    if (ticks == 1)
+    if (ticks == Constants.DBSavePeriod)
     {
         ticks = 0;
         Cat5BotDB.I.WriteAll();

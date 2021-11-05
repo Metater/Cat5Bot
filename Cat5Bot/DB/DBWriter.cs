@@ -1,8 +1,3 @@
-using System;
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Text;
-
 namespace Cat5Bot.DB; //{}
 
 // Adapted from: https://github.com/RevenantX/LiteNetLib/blob/master/LiteNetLib/Utils/NetDataWriter.cs

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-namespace Cat5Bot.DB; //{}
+﻿namespace Cat5Bot.DB; //{}
 
 // Adapted from: https://github.com/RevenantX/LiteNetLib/blob/master/LiteNetLib/Utils/FastBitConverter.cs
 public static class FastBitConverter

@@ -1,17 +1,4 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Interactivity.Extensions;
-using DSharpPlus.Interactivity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus.Entities;
-using Cat5Bot.DB;
-using Cat5Bot.Helpers;
-
-namespace Cat5Bot.Commands; //{}
+﻿namespace Cat5Bot.Commands; //{}
 
 [Group("schedule"), Aliases("s"), Description("Used for scheduling attendable events.")]
 public class SchedulingModule : BaseCommandModule

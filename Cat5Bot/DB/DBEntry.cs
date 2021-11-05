@@ -4,86 +4,86 @@ namespace Cat5Bot.DB; //{}
 
 public abstract class DBEntry : IDBSerializable
 {
-    public DBEntryType type;
+    public DBEntryType Type { get; protected set; }
     public abstract void Serialize(DBWriter dbWriter);
     public abstract void Deserialize(DBReader dbReader);
 }
 
 public class AliasedStringDBEntry : DBEntry
 {
-    public ulong alias;
+    public ulong Alias { get; private set; }
     public string str;
-    
+
     public AliasedStringDBEntry(ulong alias, string str)
     {
-        type = DBEntryType.AliasedString;
-        this.alias = alias;
+        Type = DBEntryType.AliasedString;
+        Alias = alias;
         this.str = str;
     }
 
     public AliasedStringDBEntry(DBReader dbReader)
     {
-        type = DBEntryType.AliasedString;
+        Type = DBEntryType.AliasedString;
         Deserialize(dbReader);
     }
 
     public override void Serialize(DBWriter dbWriter)
     {
-        dbWriter.Put(alias);
+        dbWriter.Put(Alias);
         dbWriter.Put(str);
     }
 
     public override void Deserialize(DBReader dbReader)
     {
-        alias = dbReader.GetULong();
+        Alias = dbReader.GetULong();
         str = dbReader.GetString();
     }
 }
 
 public class AliasedByteDBEntry : DBEntry
 {
-    public ulong alias;
+    public ulong Alias { get; private set; }
     public byte bite;
 
     public AliasedByteDBEntry(ulong alias, byte bite)
     {
-        type = DBEntryType.AliasedByte;
-        this.alias = alias;
+        Type = DBEntryType.AliasedByte;
+        Alias = alias;
         this.bite = bite;
     }
 
     public AliasedByteDBEntry(DBReader dbReader)
     {
-        type = DBEntryType.AliasedByte;
+        Type = DBEntryType.AliasedByte;
         Deserialize(dbReader);
     }
 
     public override void Serialize(DBWriter dbWriter)
     {
-        dbWriter.Put(alias);
+        dbWriter.Put(Alias);
         dbWriter.Put(bite);
     }
 
     public override void Deserialize(DBReader dbReader)
     {
-        alias = dbReader.GetULong();
+        Alias = dbReader.GetULong();
         bite = dbReader.GetByte();
     }
 }
 
 public class EventDBEntry : DBEntry
 {
-    public ulong eventId;
-    public string name;
+    public ulong EventId { get; private set; }
+    public string Name { get; private set; }
     public string eventType;
     public DateTime time;
     public TimeSpan length;
 
     public EventDBEntry(ulong eventId, string name, string eventType, DateTime time, TimeSpan length)
     {
-        type = DBEntryType.Event;
-        this.eventId = eventId;
-        this.name = name;
+        Type = DBEntryType.Event;
+        EventId = eventId;
+        Name = name;
         this.eventType = eventType;
         this.time = time;
         this.length = length;
@@ -91,14 +91,14 @@ public class EventDBEntry : DBEntry
 
     public EventDBEntry(DBReader dbReader)
     {
-        type = DBEntryType.Event;
+        Type = DBEntryType.Event;
         Deserialize(dbReader);
     }
 
     public override void Serialize(DBWriter dbWriter)
     {
-        dbWriter.Put(eventId);
-        dbWriter.Put(name);
+        dbWriter.Put(EventId);
+        dbWriter.Put(Name);
         dbWriter.Put(eventType);
         dbWriter.Put(time.ToFileTime());
         dbWriter.Put(length.TotalSeconds);
@@ -106,8 +106,8 @@ public class EventDBEntry : DBEntry
 
     public override void Deserialize(DBReader dbReader)
     {
-        eventId = dbReader.GetULong();
-        name = dbReader.GetString();
+        EventId = dbReader.GetULong();
+        Name = dbReader.GetString();
         eventType = dbReader.GetString();
         time = DateTime.FromFileTime(dbReader.GetLong());
         length = TimeSpan.FromSeconds(dbReader.GetDouble());
@@ -116,46 +116,46 @@ public class EventDBEntry : DBEntry
 
 public class AttendanceDBEntry : DBEntry
 {
-    public ulong attendee;
-    public List<ulong> eventIds;
+    public ulong Attendee { get; private set; }
+    public List<ulong> EventIds { get; private set; }
 
     public AttendanceDBEntry(ulong attendee)
     {
-        type = DBEntryType.Attendance;
-        this.attendee = attendee;
-        eventIds = new List<ulong>();
+        Type = DBEntryType.Attendance;
+        Attendee = attendee;
+        EventIds = new List<ulong>();
     }
 
     public AttendanceDBEntry(DBReader dbReader)
     {
-        type = DBEntryType.Attendance;
+        Type = DBEntryType.Attendance;
         Deserialize(dbReader);
     }
 
     public bool Attend(ulong eventId)
     {
-        if (eventIds.Contains(eventId)) return false;
-        eventIds.Add(eventId);
+        if (EventIds.Contains(eventId)) return false;
+        EventIds.Add(eventId);
         return true;
     }
 
     public bool Unattend(ulong eventId)
     {
-        if (eventIds.Contains(eventId)) return false;
-        eventIds.Remove(eventId);
+        if (!EventIds.Contains(eventId)) return false;
+        EventIds.Remove(eventId);
         return true;
     }
 
     public override void Serialize(DBWriter dbWriter)
     {
-        dbWriter.Put(attendee);
-        dbWriter.PutArrayLong(eventIds.ToArray());
+        dbWriter.Put(Attendee);
+        dbWriter.PutArrayLong(EventIds.ToArray());
     }
 
     public override void Deserialize(DBReader dbReader)
     {
-        attendee = dbReader.GetULong();
-        eventIds = new List<ulong>(dbReader.GetULongArrayLong());
+        Attendee = dbReader.GetULong();
+        EventIds = new List<ulong>(dbReader.GetULongArrayLong());
     }
 }
 

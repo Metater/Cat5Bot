@@ -33,17 +33,26 @@ commands.RegisterCommands<NamingModule>();
 commands.RegisterCommands<AttendingModule>();
 
 await discord.ConnectAsync();
-while (!Console.KeyAvailable)
+
+int ticks = 0;
+while (true)
 {
-    await Task.Delay(30000);
-    Cat5BotDB.I.WriteAll();
+    if (Console.KeyAvailable)
+    {
+        var key = Console.ReadKey();
+        if (key.Key == ConsoleKey.X) break;
+    }
+    if (ticks == 1)
+    {
+        ticks = 0;
+        Cat5BotDB.I.WriteAll();
+        Console.WriteLine("Saved DB");
+    }
+    ticks++;
+    await Task.Delay(1000);
 }
 
-// update db entries only through methods
-// make db entries get; private set, and update only through methods
-// make type in DBEntry protexted set, public get
+Cat5BotDB.I.WriteAll();
 
 //https://stackoverflow.com/questions/23285753/how-to-await-on-async-delegate
 //https://docs.microsoft.com/en-us/dotnet/api/system.func-2?view=net-5.0
-
-Cat5BotDB.I.WriteAll();

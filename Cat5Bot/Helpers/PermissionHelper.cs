@@ -18,7 +18,7 @@ public static class PermissionHelper
         return permissionLevelSelf >= requiredPermissionLevel;
     }
 
-    public static bool AllowedSelfAndGreaterThanOther(ulong id, byte requiredPermissionLevel, byte otherId, out byte permissionLevelSelf, out byte permissionLevelOther, out string message)
+    public static bool AllowedSelfAndGreaterThanOther(ulong id, byte requiredPermissionLevel, ulong otherId, out byte permissionLevelSelf, out byte permissionLevelOther, out string message)
     {
         bool allowedSelf = AllowedSelf(id, requiredPermissionLevel, out permissionLevelSelf, out message);
         permissionLevelOther = GetLevel(otherId);
@@ -29,7 +29,7 @@ public static class PermissionHelper
     public static byte GetLevel(ulong id)
     {
         byte permissionLevel = 0;
-        if (Cat5BotDB.I.Query((e) => e.alias == id, out AliasedByteDBEntry e))
+        if (Cat5BotDB.I.Query((e) => e.Alias == id, out AliasedByteDBEntry e))
             permissionLevel = e.bite;
         return permissionLevel;
     }

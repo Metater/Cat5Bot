@@ -116,29 +116,23 @@ public sealed class Cat5BotDB
     #region ExtendedFunctionality
     public static void LinkAttendee(ulong attendee, string name)
     {
-        if (I.Query((e) => e.alias == attendee, out AliasedStringDBEntry e))
-        {
+        if (I.Query((e) => e.Alias == attendee, out AliasedStringDBEntry e))
             e.str = name;
-        }
         else
-        {
             I.Insert(new AliasedStringDBEntry(attendee, name));
-        }
     }
     public static void UpdatePermission(ulong member, byte permission)
     {
-        if (I.Query((e) => e.alias == member, out AliasedByteDBEntry e))
-        {
+        if (I.Query((e) => e.Alias == member, out AliasedByteDBEntry e))
             e.bite = permission;
-        }
         else
-        {
             I.Insert(new AliasedByteDBEntry(member, permission));
-        }
     }
+    /*
     public static void GetEvents(int day, int month, out List<EventDBEntry> events)
     {
-        re
+        //re
     }
+    */
     #endregion ExtendedFunctionality
 }

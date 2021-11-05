@@ -65,10 +65,12 @@ public class AttendingModule : BaseCommandModule
         }
     }
 
+    /*
     private async Task Attend()
     {
 
     }
+    */
 
     // cmd: attend self date: ctx, date
     // respond interactively to resolve ambiguity with timeout

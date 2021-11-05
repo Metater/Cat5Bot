@@ -4,7 +4,7 @@ public static class Constants
 {
     public const double CancellableCommandTimeout = 120;
     
-    public static class Permission
+    public static class Permissions
     {
         public const byte WriteDB = 16;
         public const byte NameOther = 64;

@@ -33,7 +33,7 @@ public class NamingModule : BaseCommandModule
     [GroupCommand, Description("Links someone's full name to their attendance record.")]
     public async Task NameOther(CommandContext ctx, [Description("Person you are linking")] DiscordUser user, [Description("Their full name to be used in the attendance record")] params string[] fullName)
     {
-        if (PermissionHelper.AllowedSelfAndGreaterThanOther(ctx.User.Id, Constants.Permission.NameOther, user.Id, out _, out _, out string message))
+        if (PermissionHelper.AllowedSelfAndGreaterThanOther(ctx.User.Id, Constants.Permissions.NameOther, user.Id, out _, out _, out string message))
         {
             if (fullName.Length < 1)
             {

@@ -8,7 +8,7 @@ public class AttendingModule : BaseCommandModule
     {
         // find event today, if multiple resolve ambiguity through interactivity
 
-        string message = $"Marked as attending \"NameOfEvent\" on \"DateOfEvent\" at \"TimeOfEvent\".";
+        DBHelper.GetFutureEvents(5, out List<EventDBEntry> events);       string message = $"Marked as attending \"NameOfEvent\" on \"DateOfEvent\" at \"TimeOfEvent\".";
         var interactivity = ctx.Client.GetInteractivity();
         await InteractivityHelper.CancellableCommand(message, interactivity, ctx, async (cancelled) =>
         {

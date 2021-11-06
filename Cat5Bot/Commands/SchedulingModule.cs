@@ -3,6 +3,9 @@
 [Group("schedule"), Aliases("s"), Description("Used for scheduling attendable events.")]
 public class SchedulingModule : BaseCommandModule
 {
+    // pagination interactivity to find events happening soon
+
+
     [GroupCommand]
     public async Task Schedule(CommandContext ctx)
     {

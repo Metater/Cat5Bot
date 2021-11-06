@@ -14,7 +14,7 @@ public class PermissionsModule : BaseCommandModule
     {
         if (PermissionHelper.AllowedSelfAndGreaterThanOther(ctx.User.Id, Constants.Permissions.SetPermissionLevel, user.Id, out _, out _, out string message))
         {
-            Cat5BotDB.UpdatePermission(user.Id, userPermissionLevel);
+            DBHelper.UpdatePermission(user.Id, userPermissionLevel);
             await ctx.RespondAsync($"Updated permissions of \"{user.Username}\" to {userPermissionLevel}");
         }
         else

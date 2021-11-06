@@ -12,7 +12,7 @@ public class NamingModule : BaseCommandModule
             return;
         }
         string nameStr = string.Join(" ", fullName);
-        Cat5BotDB.LinkAttendee(ctx.User.Id, nameStr);
+        DBHelper.LinkAttendee(ctx.User.Id, nameStr);
         await ctx.RespondAsync($"Linked your attendance record to \"{nameStr}\".");
     }
 
@@ -27,7 +27,7 @@ public class NamingModule : BaseCommandModule
                 return;
             }
             string nameStr = string.Join(" ", fullName);
-            Cat5BotDB.LinkAttendee(user.Id, nameStr);
+            DBHelper.LinkAttendee(user.Id, nameStr);
             await ctx.RespondAsync($"Linked their attendance record to \"{nameStr}\".");
         }
         else

@@ -72,16 +72,16 @@ public class AliasedByteDBEntry : DBEntry
 public class EventDBEntry : DBEntry
 {
     public ulong EventId { get; private set; }
-    public string Name { get; private set; }
+    public string eventName;
     public string eventType;
     public DateTime time;
     public TimeSpan length;
 
-    public EventDBEntry(ulong eventId, string name, string eventType, DateTime time, TimeSpan length)
+    public EventDBEntry(ulong eventId, string eventName, string eventType, DateTime time, TimeSpan length)
     {
         Type = DBEntryType.Event;
         EventId = eventId;
-        Name = name;
+        this.eventName = eventName;
         this.eventType = eventType;
         this.time = time;
         this.length = length;
@@ -96,7 +96,7 @@ public class EventDBEntry : DBEntry
     public override void Serialize(DBWriter dbWriter)
     {
         dbWriter.Put(EventId);
-        dbWriter.Put(Name);
+        dbWriter.Put(eventName);
         dbWriter.Put(eventType);
         dbWriter.Put(time.ToFileTime());
         dbWriter.Put(length.TotalSeconds);
@@ -105,7 +105,7 @@ public class EventDBEntry : DBEntry
     public override void Deserialize(DBReader dbReader)
     {
         EventId = dbReader.GetULong();
-        Name = dbReader.GetString();
+        eventName = dbReader.GetString();
         eventType = dbReader.GetString();
         time = DateTime.FromFileTime(dbReader.GetLong());
         length = TimeSpan.FromSeconds(dbReader.GetDouble());

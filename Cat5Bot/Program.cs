@@ -1,5 +1,8 @@
 ﻿Console.WriteLine("Hello, World!");
 
+Console.WriteLine(DateTime.Today);
+Console.WriteLine(DateTime.Today.AddHours(23).AddMinutes(59).AddSeconds(59));
+
 string token = File.ReadAllText(Directory.GetCurrentDirectory() + @"\token.secret");
 
 var discord = new DiscordClient(new DiscordConfiguration()
